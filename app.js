@@ -12,7 +12,7 @@ const app = express();
 
 // 可以在 CORS 設置中使用這個 allowedOrigins
 const allowedOrigins =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_ENV === "development"
     ? ["http://localhost:8080", process.env.ALLOW_URL_GIT]
     : "*";
 
