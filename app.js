@@ -6,9 +6,9 @@ const cors = require("cors");
 
 const app = express();
 
-if (process.env.NODE_ENV !== "production") {
-  console.error("詳細錯誤信息（僅在非生產環境）:", error);
-}
+// if (process.env.NODE_ENV !== "production") {
+//   console.error("詳細錯誤信息（僅在非生產環境）:", error);
+// }
 
 // 可以在 CORS 設置中使用這個 allowedOrigins
 const allowedOrigins =
