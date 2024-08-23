@@ -17,7 +17,7 @@ router.post("/signin", async (req, res) => {
       expired: decodedToken.exp * 1000,
     });
   } catch (error) {
-    res.status(400).json({ success: false, message: "登入失敗" });
+    res.status(400).json({ success: false, message: "登入失敗", error: error });
   }
 });
 
