@@ -53,6 +53,10 @@ npm install
 ex. NODE_ENV = "test"
 ```
 
+> TinyPNG API 申請
+
+- [TinyPNG](https://tinypng.com/developers)
+
 啟動 server
 
 ```bash
