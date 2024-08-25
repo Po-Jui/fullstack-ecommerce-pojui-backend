@@ -237,13 +237,12 @@ router.post("/createOrder", (req, res) => {
     const data = req.body;
     console.log(data);
 
-    // 使用 Unix Timestamp 作為訂單編號（金流也需要加入時間戳記）
+    // 使用 Unix Timestamp 作為金流的時間戳記）
     const TimeStamp = Math.round(new Date().getTime() / 1000);
     const order = {
       ...data,
       TimeStamp,
       Amt: parseInt(data.Amt),
-      MerchantOrderNo: TimeStamp, // 金流訂單編號
     };
 
     // 進行訂單加密
@@ -260,6 +259,7 @@ router.post("/createOrder", (req, res) => {
     orders[TimeStamp] = order;
     console.log(orders[TimeStamp]);
 
+    // 重新定向
     // res.redirect(`/check/${TimeStamp}`);
     res.json({
       success: true,
