@@ -47,10 +47,10 @@ npm install
 
 設定環境參數
 
-> 在非 development 環境下，Access-Control-Allow-Origin 將反映請求的來源
+> 在 development 環境下，Access-Control-Allow-Origin 將反映請求的來源
 
 ```plain
-ex. NODE_ENV = "test"
+NODE_ENV = "development"
 ```
 
 > TinyPNG API 申請
