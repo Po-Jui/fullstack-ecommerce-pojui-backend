@@ -281,9 +281,6 @@ router.post("/sendPayment", async (req, res) => {
     formData.append("TradeSha", shaEncrypt);
     formData.append("Version", Version);
 
-    console.log("Request Data:", formData.toString());
-    console.log("PayGateWay:", PayGateWay);
-
     const response = await axios.post(PayGateWay, formData, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -297,10 +294,6 @@ router.post("/sendPayment", async (req, res) => {
         return status >= 200 && status < 500; // 接受狀態碼在200到500之間的響應
       },
     });
-
-    console.log("Response Status:", response.status);
-    console.log("Response Headers:", response.headers);
-    console.log("Response Data:", response.data);
 
     if (response.status === 302) {
       // 如果是重定向，返回重定向URL
