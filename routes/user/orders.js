@@ -292,7 +292,7 @@ router.post("/sendPayment", async (req, res) => {
     //     'Content-Type': 'application/x-www-form-urlencoded'
     //   }
     // });
-
+    res.json({ success: true, message: "發送成功" });
     // // 返回支付閘道回應
     // res.send(response.data);
   } catch (error) {
