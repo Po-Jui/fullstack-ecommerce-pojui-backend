@@ -12,7 +12,7 @@ const app = express();
 
 // 可以在 CORS 設置中使用這個 allowedOrigins
 const allowedOrigins =
-  process.env.NODE_ENV === "development"
+  process.env.NODE_ENV === "production"
     ? [process.env.ALLOW_URL_ZEABER, process.env.ALLOW_URL_GIT]
     : "*";
 
