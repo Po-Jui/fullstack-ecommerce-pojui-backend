@@ -286,15 +286,18 @@ router.post("/sendPayment", async (req, res) => {
 
     console.log("requestData:", requestData);
     console.log("PayGateWay:", PayGateWay);
-    // // 發送 POST 請求到藍新金流支付接口
-    // const response = await axios.post(PayGateWay, querystring.stringify(requestData), {
-    //   headers: {
-    //     'Content-Type': 'application/x-www-form-urlencoded'
-    //   }
-    // });
-    res.json({ success: true, message: "發送成功" });
-    // // 返回支付閘道回應
-    // res.send(response.data);
+    // 發送 POST 請求到藍新金流支付接口
+    const response = await axios.post(
+      PayGateWay,
+      querystring.stringify(requestData),
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+    // 返回支付閘道回應
+    res.send(response.data);
   } catch (error) {
     console.error("Error in Payment Gateway Request:", error);
     res.status(500).send("Payment request failed");
