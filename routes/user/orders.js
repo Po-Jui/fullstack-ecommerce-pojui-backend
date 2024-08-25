@@ -300,7 +300,7 @@ router.post("/sendPayment", async (req, res) => {
     res.send(response.data);
   } catch (error) {
     console.error("Error in Payment Gateway Request:", error);
-    res.status(500).send("Payment request failed");
+    res.status(500).send("Payment request failed" + error);
   }
 });
 
