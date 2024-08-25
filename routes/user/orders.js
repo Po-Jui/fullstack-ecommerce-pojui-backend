@@ -271,4 +271,18 @@ router.post("/createOrder", (req, res) => {
   }
 });
 
+router.get("/paytest/:id", (req, res) => {
+  try {
+    const { id } = req.params;
+    const order = orders[id];
+    if (!order) {
+      return res.status(404).json({ success: false, message: "查無此訂單" });
+    }
+    res.json({ success: true, message: "訂單成功", data: order });
+  } catch (error) {
+    console.error("Error in Payment Gateway Request:", error);
+    res.status(500).send("Payment request failed");
+  }
+});
+
 module.exports = router;
