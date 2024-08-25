@@ -271,9 +271,6 @@ router.post("/createOrder", (req, res) => {
   }
 });
 
-const axios = require("axios");
-const querystring = require("querystring");
-
 router.post("/sendPayment", async (req, res) => {
   try {
     const { aesEncrypt, shaEncrypt } = req.body;
