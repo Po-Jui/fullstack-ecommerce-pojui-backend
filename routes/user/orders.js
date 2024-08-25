@@ -271,36 +271,58 @@ router.post("/createOrder", (req, res) => {
   }
 });
 
+const axios = require("axios");
+const querystring = require("querystring");
+
 router.post("/sendPayment", async (req, res) => {
   try {
-    // 確保你已經獲取了要發送的數據
     const { aesEncrypt, shaEncrypt } = req.body;
 
-    // 構建請求數據
-    const requestData = {
-      MerchantID: MerchantID, // 替換為實際的商戶ID
-      TradeInfo: aesEncrypt,
-      TradeSha: shaEncrypt,
-      Version: Version, // 替換為藍新金流 API 的版本
-    };
+    const formData = new URLSearchParams();
+    formData.append("MerchantID", MerchantID);
+    formData.append("TradeInfo", aesEncrypt);
+    formData.append("TradeSha", shaEncrypt);
+    formData.append("Version", Version);
 
-    console.log("requestData:", requestData);
+    console.log("Request Data:", formData.toString());
     console.log("PayGateWay:", PayGateWay);
-    // 發送 POST 請求到藍新金流支付接口
-    const response = await axios.post(
-      PayGateWay,
-      querystring.stringify(requestData),
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }
-    );
-    // 返回支付閘道回應
-    res.send(response.data);
+
+    const response = await axios.post(PayGateWay, formData, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        Origin: process.env.ALLOW_URL_ZEABER,
+        Referer: process.env.ALLOW_URL_ZEABER,
+      },
+      maxRedirects: 0, // 防止自動重定向
+      validateStatus: function (status) {
+        return status >= 200 && status < 500; // 接受狀態碼在200到500之間的響應
+      },
+    });
+
+    console.log("Response Status:", response.status);
+    console.log("Response Headers:", response.headers);
+    console.log("Response Data:", response.data);
+
+    if (response.status === 302) {
+      // 如果是重定向，返回重定向URL
+      res.redirect(response.headers.location);
+    } else {
+      // 否則返回支付閘道回應
+      res.send(response.data);
+    }
   } catch (error) {
-    console.error("Error in Payment Gateway Request:", error);
-    res.status(500).send("Payment request failed" + error);
+    console.error(
+      "Error in Payment Gateway Request:",
+      error.response ? error.response.data : error.message
+    );
+    res
+      .status(500)
+      .send(
+        "Payment request failed: " +
+          (error.response ? JSON.stringify(error.response.data) : error.message)
+      );
   }
 });
 
