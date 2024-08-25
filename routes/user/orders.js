@@ -233,37 +233,41 @@ const {
 const RespondType = "JSON";
 
 router.post("/createOrder", (req, res) => {
-  const data = req.body;
-  console.log(data);
+  try {
+    const data = req.body;
+    console.log(data);
 
-  // 使用 Unix Timestamp 作為訂單編號（金流也需要加入時間戳記）
-  const TimeStamp = Math.round(new Date().getTime() / 1000);
-  const order = {
-    ...data,
-    TimeStamp,
-    Amt: parseInt(data.Amt),
-    MerchantOrderNo: TimeStamp, // 金流訂單編號
-  };
+    // 使用 Unix Timestamp 作為訂單編號（金流也需要加入時間戳記）
+    const TimeStamp = Math.round(new Date().getTime() / 1000);
+    const order = {
+      ...data,
+      TimeStamp,
+      Amt: parseInt(data.Amt),
+      MerchantOrderNo: TimeStamp, // 金流訂單編號
+    };
 
-  // 進行訂單加密
-  // 加密第一段字串，此段主要是提供交易內容給予藍新金流
-  const aesEncrypt = createSesEncrypt(order);
-  console.log("aesEncrypt:", aesEncrypt);
+    // 進行訂單加密
+    // 加密第一段字串，此段主要是提供交易內容給予藍新金流
+    const aesEncrypt = createSesEncrypt(order);
+    console.log("aesEncrypt:", aesEncrypt);
 
-  // 使用 HASH 再次 SHA 加密字串，作為驗證使用
-  const shaEncrypt = createShaEncrypt(aesEncrypt);
-  console.log("shaEncrypt:", shaEncrypt);
-  order.aesEncrypt = aesEncrypt;
-  order.shaEncrypt = shaEncrypt;
+    // 使用 HASH 再次 SHA 加密字串，作為驗證使用
+    const shaEncrypt = createShaEncrypt(aesEncrypt);
+    console.log("shaEncrypt:", shaEncrypt);
+    order.aesEncrypt = aesEncrypt;
+    order.shaEncrypt = shaEncrypt;
 
-  orders[TimeStamp] = order;
-  console.log(orders[TimeStamp]);
+    orders[TimeStamp] = order;
+    console.log(orders[TimeStamp]);
 
-  // res.redirect(`/check/${TimeStamp}`);
-  res.json({
-    success: true,
-    message: "建立成功",
-  });
+    // res.redirect(`/check/${TimeStamp}`);
+    res.json({
+      success: true,
+      message: "建立成功",
+    });
+  } catch (error) {
+    res.status(404).json({ success: false, message: error.message });
+  }
 });
 
 module.exports = router;
