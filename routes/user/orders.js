@@ -264,6 +264,7 @@ router.post("/createOrder", (req, res) => {
     res.json({
       success: true,
       message: "建立成功",
+      data: order,
     });
   } catch (error) {
     res.status(404).json({ success: false, message: error.message });
