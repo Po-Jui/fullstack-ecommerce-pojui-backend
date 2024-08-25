@@ -3,6 +3,8 @@ const router = express.Router();
 const admin = require("firebase-admin");
 const db = admin.firestore();
 const crypto = require("crypto");
+const axios = require("axios");
+const querystring = require("querystring");
 require("dotenv").config();
 
 // 建立訂單
@@ -259,8 +261,6 @@ router.post("/createOrder", (req, res) => {
     orders[TimeStamp] = order;
     console.log(orders[TimeStamp]);
 
-    // 重新定向
-    // res.redirect(`/check/${TimeStamp}`);
     res.json({
       success: true,
       message: "建立成功",
@@ -271,14 +271,30 @@ router.post("/createOrder", (req, res) => {
   }
 });
 
-router.get("/paytest/:id", (req, res) => {
+router.post("/sendPayment", async (req, res) => {
   try {
-    const { id } = req.params;
-    const order = orders[id];
-    if (!order) {
-      return res.status(404).json({ success: false, message: "查無此訂單" });
-    }
-    res.json({ success: true, message: "訂單成功", data: order });
+    // 確保你已經獲取了要發送的數據
+    const { aesEncrypt, shaEncrypt } = req.body;
+
+    // 構建請求數據
+    const requestData = {
+      MerchantID: MerchantID, // 替換為實際的商戶ID
+      TradeInfo: aesEncrypt,
+      TradeSha: shaEncrypt,
+      Version: Version, // 替換為藍新金流 API 的版本
+    };
+
+    console.log("requestData:", requestData);
+    console.log("PayGateWay:", PayGateWay);
+    // // 發送 POST 請求到藍新金流支付接口
+    // const response = await axios.post(PayGateWay, querystring.stringify(requestData), {
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded'
+    //   }
+    // });
+
+    // // 返回支付閘道回應
+    // res.send(response.data);
   } catch (error) {
     console.error("Error in Payment Gateway Request:", error);
     res.status(500).send("Payment request failed");
