@@ -5,5 +5,11 @@
   </head>
   <body>
     <h1>結帳成功</h1>
+    <p>正在重定向到您的訂單...</p>
+    <script>
+      setTimeout(function () {
+        window.location.href = "<%= redirectUrl %>";
+      }, 3000); // 3秒後進行重定向
+    </script>
   </body>
 </html>
