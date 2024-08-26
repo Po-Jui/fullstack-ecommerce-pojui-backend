@@ -255,8 +255,8 @@ router.post("/createOrder", (req, res) => {
     // 使用 HASH 再次 SHA 加密字串，作為驗證使用
     const shaEncrypt = createShaEncrypt(aesEncrypt);
     console.log("shaEncrypt:", shaEncrypt);
-    order.aesEncrypt = aesEncrypt;
-    order.shaEncrypt = shaEncrypt;
+    order.TradeInfo = aesEncrypt;
+    order.TradeSha = shaEncrypt;
 
     orders[TimeStamp] = order;
     console.log(orders[TimeStamp]);
