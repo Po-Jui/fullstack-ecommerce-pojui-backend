@@ -231,6 +231,7 @@ const {
   PayGateWay,
   NotifyUrl,
   ReturnUrl,
+  redirectUrl,
 } = process.env;
 const RespondType = "JSON";
 
@@ -282,7 +283,7 @@ router.post("/newebpay_return", function (req, res, next) {
   // 渲染結果頁面
   res.render("success", {
     title: "Express",
-    redirectUrl: `https://fullstack-ecommerce-pojui.zeabur.app/#/checkout/${data.Result.MerchantOrderNo}`,
+    redirectUrl: `${redirectUrl}/${data.Result.MerchantOrderNo}`,
   });
 });
 
