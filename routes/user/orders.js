@@ -311,7 +311,13 @@ router.post("/newebpay_return", async (req, res, next) => {
       is_paid: true,
       paid_date: admin.firestore.Timestamp.now().seconds, // 新增付款日期
     });
-    console.log("訂單更新成功:", data.Result.MerchantOrderNo);
+    // 確認更新後的文檔內容
+    const updatedDoc = await orderRef.get();
+    if (updatedDoc.exists && updatedDoc.data().is_paid === true) {
+      console.log("訂單更新成功:", data.Result.MerchantOrderNo);
+    } else {
+      console.error("訂單更新後檢查失敗:", data.Result.MerchantOrderNo);
+    }
 
     // 渲染結果頁面
     res.render("success", {
