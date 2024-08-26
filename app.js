@@ -42,7 +42,7 @@ console.log(corsOptions);
 // app.use(cors(corsOptions));
 // 使用條件檢查的中間件
 app.use((req, res, next) => {
-  if (req.path === "/newebpay-notify") {
+  if (req.path === "/newebpay_notify") {
     // 直接進入下一個中間件，不使用 CORS
     next();
   } else {
