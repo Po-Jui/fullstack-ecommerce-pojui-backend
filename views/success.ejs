@@ -16,14 +16,16 @@
       <v-app>
         <v-container class="success-page" fluid>
           <v-row justify="center" align="center">
-            <v-col cols="12" md="8" lg="6" class="text-center">
-              <v-card outlined>
-                <v-card-title>
+            <v-col cols="12" md="8" lg="6">
+              <v-card class="text-center" outlined>
+                <v-card-title class="d-flex justify-center align-center">
                   <v-icon color="success" size="64"
                     >mdi-check-circle-outline</v-icon
                   >
                 </v-card-title>
-                <v-card-subtitle class="mt-4">
+                <v-card-subtitle
+                  class="d-flex justify-center align-center mt-2"
+                >
                   <h1 class="display-1 success-text">交易成功！</h1>
                 </v-card-subtitle>
                 <v-card-text>
@@ -46,7 +48,6 @@
       const vuetify = createVuetify();
 
       createApp({}).use(vuetify).mount("#app");
-
       setTimeout(function () {
         window.location.href = "<%= redirectUrl %>";
       }, 3000); // 3秒後進行重定向
@@ -62,6 +63,11 @@
       }
       .success-text {
         color: #4caf50;
+      }
+      .v-card-title {
+        justify-content: center;
+        align-items: center;
+        display: flex;
       }
     </style>
   </body>
