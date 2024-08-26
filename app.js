@@ -28,7 +28,12 @@ const allowedOrigins =
 // CORS 配置
 const corsOptions = {
   origin: function (origin, callback) {
-    if (allowedOrigins === "*" || allowedOrigins.indexOf(origin) !== -1) {
+    // 允許來自允許清單內的請求，以及沒有 origin（例如：後端回調請求）
+    if (
+      allowedOrigins === "*" ||
+      !origin ||
+      allowedOrigins.indexOf(origin) !== -1
+    ) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
