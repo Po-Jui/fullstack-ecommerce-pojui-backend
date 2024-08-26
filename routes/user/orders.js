@@ -272,19 +272,55 @@ router.post("/createOrder", (req, res) => {
   }
 });
 
+// // 交易成功：Return （可直接解密，將資料呈現在畫面上）
+// router.post("/newebpay_return", (req, res, next) => {
+//   console.log("req.body return data", req.body);
+//   const response = req.body;
+//   // 解密交易內容
+//   const data = createSesDecrypt(response.TradeInfo);
+//   console.log("data:", data.Result.MerchantOrderNo);
+
+//   // 渲染結果頁面
+//   res.render("success", {
+//     title: "Express",
+//     redirectUrl: `${redirectUrl}/${data.Result.MerchantOrderNo}`,
+//   });
+// });
+
 // 交易成功：Return （可直接解密，將資料呈現在畫面上）
-router.post("/newebpay_return", (req, res, next) => {
+router.post("/newebpay_return", async (req, res, next) => {
   console.log("req.body return data", req.body);
   const response = req.body;
+
   // 解密交易內容
   const data = createSesDecrypt(response.TradeInfo);
   console.log("data:", data.Result.MerchantOrderNo);
 
-  // 渲染結果頁面
-  res.render("success", {
-    title: "Express",
-    redirectUrl: `${redirectUrl}/${data.Result.MerchantOrderNo}`,
-  });
+  try {
+    // 獲取訂單參考
+    const orderRef = db.collection("orders").doc(data.Result.MerchantOrderNo);
+    const doc = await orderRef.get();
+
+    if (!doc.exists) {
+      return res.status(404).json({ success: false, message: "找不到訂單" });
+    }
+
+    // 更新訂單狀態並新增 paid_date 欄位
+    await orderRef.update({
+      is_paid: true,
+      paid_date: admin.firestore.Timestamp.now().seconds, // 新增付款日期
+    });
+
+    // 渲染結果頁面
+    res.render("success", {
+      title: "Express",
+      redirectUrl: `${redirectUrl}/${data.Result.MerchantOrderNo}`,
+    });
+  } catch (error) {
+    // 处理错误
+    console.error("更新訂單狀態失敗:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
 
 // 確認交易：Notify
