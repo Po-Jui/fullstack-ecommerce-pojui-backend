@@ -271,50 +271,10 @@ router.post("/createOrder", (req, res) => {
   }
 });
 
-router.post("/sendPayment", async (req, res) => {
-  try {
-    const { aesEncrypt, shaEncrypt } = req.body;
-
-    const formData = new URLSearchParams();
-    formData.append("MerchantID", MerchantID);
-    formData.append("TradeInfo", aesEncrypt);
-    formData.append("TradeSha", shaEncrypt);
-    formData.append("Version", Version);
-
-    const response = await axios.post(PayGateWay, formData, {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        Origin: process.env.ALLOW_URL_ZEABER,
-        Referer: process.env.ALLOW_URL_ZEABER,
-      },
-      maxRedirects: 0, // 防止自動重定向
-      validateStatus: function (status) {
-        return status >= 200 && status < 500; // 接受狀態碼在200到500之間的響應
-      },
-    });
-
-    if (response.status === 302) {
-      // 如果是重定向，返回重定向URL
-      res.redirect(response.headers.location);
-    } else {
-      console.log(response.data);
-      // 否則返回支付閘道回應
-      res.send(response.data);
-    }
-  } catch (error) {
-    console.error(
-      "Error in Payment Gateway Request:",
-      error.response ? error.response.data : error.message
-    );
-    res
-      .status(500)
-      .send(
-        "Payment request failed: " +
-          (error.response ? JSON.stringify(error.response.data) : error.message)
-      );
-  }
+// 交易成功：Return （可直接解密，將資料呈現在畫面上）
+router.post("/newebpay_return", function (req, res, next) {
+  console.log("req.body return data", req.body);
+  res.render("success", { title: "Express" });
 });
 
 module.exports = router;
