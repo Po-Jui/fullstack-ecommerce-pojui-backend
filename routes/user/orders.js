@@ -184,11 +184,9 @@ function genDataChain(order) {
     order.MerchantOrderNo
   }&Amt=${order.Amt}&NotifyURL=${encodeURIComponent(
     NotifyUrl
-  )}&ReturnURL=${encodeURIComponent(
-    `${ReturnUrl}/${order.MerchantOrderNo}`
-  )}&ItemDesc=${encodeURIComponent(order.ItemDesc)}&Email=${encodeURIComponent(
-    order.Email
-  )}`;
+  )}&ReturnURL=${encodeURIComponent(ReturnUrl)}&ItemDesc=${encodeURIComponent(
+    order.ItemDesc
+  )}&Email=${encodeURIComponent(order.Email)}`;
 }
 // 對應文件 P17
 // MerchantID=MS12345678&TimeStamp=1663040304&Version=2.0&RespondType=Stri
