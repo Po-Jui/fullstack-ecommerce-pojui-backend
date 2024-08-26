@@ -295,17 +295,12 @@ router.post("/sendPayment", async (req, res) => {
       },
     });
 
-    if (response.status === 200) {
-      // 當狀態碼為 200 時，重定向到指定的 URL
-      const redirectUrl =
-        response.data.redirectUrl || response.headers.location;
-      if (redirectUrl) {
-        res.redirect(redirectUrl);
-      } else {
-        res.send("Redirect URL not provided by payment gateway.");
-      }
+    if (response.status === 302) {
+      // 如果是重定向，返回重定向URL
+      res.redirect(response.headers.location);
     } else {
-      // 對於其他狀態碼，返回支付閘道的回應
+      console.log(response.data);
+      // 否則返回支付閘道回應
       res.send(response.data);
     }
   } catch (error) {
