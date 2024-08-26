@@ -302,6 +302,7 @@ router.post("/newebpay_return", async (req, res, next) => {
     const doc = await orderRef.get();
 
     if (!doc.exists) {
+      console.error("找不到訂單，訂單號:", data.Result.MerchantOrderNo);
       return res.status(404).json({ success: false, message: "找不到訂單" });
     }
 
@@ -310,6 +311,7 @@ router.post("/newebpay_return", async (req, res, next) => {
       is_paid: true,
       paid_date: admin.firestore.Timestamp.now().seconds, // 新增付款日期
     });
+    console.log("訂單更新成功:", data.Result.MerchantOrderNo);
 
     // 渲染結果頁面
     res.render("success", {
@@ -317,7 +319,7 @@ router.post("/newebpay_return", async (req, res, next) => {
       redirectUrl: `${redirectUrl}/${data.Result.MerchantOrderNo}`,
     });
   } catch (error) {
-    // 处理错误
+    // 處理錯誤
     console.error("更新訂單狀態失敗:", error);
     res.status(500).json({ success: false, message: error.message });
   }
