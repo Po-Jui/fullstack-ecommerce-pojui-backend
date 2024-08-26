@@ -272,50 +272,23 @@ router.post("/createOrder", (req, res) => {
   }
 });
 
-// 交易成功：Return
-router.post("/newebpay_return", async (req, res, next) => {
+// 交易成功：Return （可直接解密，將資料呈現在畫面上）
+router.post("/newebpay_return", (req, res, next) => {
   console.log("req.body return data", req.body);
   const response = req.body;
-
   // 解密交易內容
   const data = createSesDecrypt(response.TradeInfo);
   console.log("data:", data.Result.MerchantOrderNo);
 
-  if (data.Status == "SUCCESS") {
-    try {
-      const orderId = data.Result.MerchantOrderNo;
-      const orderRef = db.collection("orders").doc(orderId);
-      const doc = await orderRef.get();
-
-      if (!doc.exists) {
-        return res.status(404).json({ success: false, message: "找不到訂單" });
-      }
-
-      // 更新訂單狀態並新增 paid_date 欄位
-      await orderRef.update({
-        is_paid: true,
-        paid_date: admin.firestore.Timestamp.now().seconds, // 新增付款日期
-      });
-
-      // 渲染結果頁面
-      res.render("success", {
-        title: "Express",
-        redirectUrl: `${redirectUrl}/${data.Result.MerchantOrderNo}`,
-      });
-    } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  } else {
-    // 如果交易不成功，渲染錯誤頁面或其他處理
-    res.render("failure", {
-      title: "交易失敗",
-      message: "交易未成功，請稍後再試。",
-    });
-  }
+  // 渲染結果頁面
+  res.render("success", {
+    title: "Express",
+    redirectUrl: `${redirectUrl}/${data.Result.MerchantOrderNo}`,
+  });
 });
 
 // 確認交易：Notify
-router.post("/newebpay_notify", function (req, res, next) {
+router.post("/newebpay_notify", (req, res, next) => {
   console.log("req.body notify data", req.body);
   const response = req.body;
 
