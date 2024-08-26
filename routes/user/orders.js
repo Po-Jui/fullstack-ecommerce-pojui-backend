@@ -259,8 +259,8 @@ router.post("/createOrder", (req, res) => {
     order.TradeInfo = aesEncrypt;
     order.TradeSha = shaEncrypt;
 
-    orders[TimeStamp] = order;
-    console.log(orders[TimeStamp]);
+    orders[data.MerchantOrderNo] = order;
+    console.log(orders[data.MerchantOrderNo]);
 
     res.json({
       success: true,
