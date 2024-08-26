@@ -274,6 +274,7 @@ router.post("/createOrder", (req, res) => {
 // 交易成功：Return （可直接解密，將資料呈現在畫面上）
 router.post("/newebpay_return", function (req, res, next) {
   console.log("req.body return data", req.body);
+  const response = req.body;
   // 解密交易內容
   const data = createSesDecrypt(response.TradeInfo);
   console.log("data:", data.Result.MerchantOrderNo);
