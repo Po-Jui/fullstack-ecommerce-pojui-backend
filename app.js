@@ -28,12 +28,7 @@ const allowedOrigins =
 // CORS 配置
 const corsOptions = {
   origin: function (origin, callback) {
-    // 允許來自允許清單內的請求，以及沒有 origin（例如：後端回調請求）
-    if (
-      allowedOrigins === "*" ||
-      !origin ||
-      allowedOrigins.indexOf(origin) !== -1
-    ) {
+    if (allowedOrigins === "*" || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
@@ -44,7 +39,17 @@ const corsOptions = {
 
 console.log(corsOptions);
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+// 使用條件檢查的中間件
+app.use((req, res, next) => {
+  if (req.path === "/newebpay-notify") {
+    // 直接進入下一個中間件，不使用 CORS
+    next();
+  } else {
+    // 應用 CORS 中間件
+    cors(corsOptions)(req, res, next);
+  }
+});
 app.use(bodyParser.json());
 
 // admin 路由
