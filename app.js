@@ -10,6 +10,10 @@ const app = express();
 //   console.error("詳細錯誤信息（僅在非生產環境）:", error);
 // }
 
+// view engine setup
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
+
 // 可以在 CORS 設置中使用這個 allowedOrigins
 const allowedOrigins =
   process.env.NODE_ENV === "production"
