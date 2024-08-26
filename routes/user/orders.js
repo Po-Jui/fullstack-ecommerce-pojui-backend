@@ -289,30 +289,30 @@ router.post("/sendPayment", async (req, res) => {
         Origin: process.env.ALLOW_URL_ZEABER,
         Referer: process.env.ALLOW_URL_ZEABER,
       },
-      maxRedirects: 0,
+      maxRedirects: 0, // 防止自動重定向
       validateStatus: function (status) {
-        return status >= 200 && status < 500;
+        return status >= 200 && status < 500; // 接受狀態碼在200到500之間的響應
       },
     });
 
-    if (response.status === 200) {
-      // 如果是重定向，返回重定向URL給前端
-      res.json({ redirectUrl: response.headers.location });
+    if (response.status === 302) {
+      // 如果是重定向，返回重定向URL
+      res.redirect(response.headers.location);
     } else {
-      // 如果不是重定向，返回一個錯誤
-      res
-        .status(400)
-        .json({ error: "Unexpected response from payment gateway" });
+      // 否則返回支付閘道回應
+      res.send(response.data);
     }
   } catch (error) {
     console.error(
       "Error in Payment Gateway Request:",
       error.response ? error.response.data : error.message
     );
-    res.status(500).json({
-      error: "Payment request failed",
-      details: error.response ? error.response.data : error.message,
-    });
+    res
+      .status(500)
+      .send(
+        "Payment request failed: " +
+          (error.response ? JSON.stringify(error.response.data) : error.message)
+      );
   }
 });
 
