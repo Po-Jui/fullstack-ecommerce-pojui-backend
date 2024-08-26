@@ -300,7 +300,7 @@ router.post("/newebpay_return", async (req, res, next) => {
       // 渲染結果頁面
       res.render("success", {
         title: "Express",
-        redirectUrl: `/checkout/${data.Result.MerchantOrderNo}`,
+        redirectUrl: `/${redirectUrl}/${data.Result.MerchantOrderNo}`,
       });
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });
