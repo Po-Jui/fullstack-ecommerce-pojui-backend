@@ -54,6 +54,7 @@ const userOrdersRouter = require("./routes/user/orders");
 // 設定管理員 路由
 const setRoleRouter = require("./setRole");
 app.use(express.json()); // 解析 JSON 請求
+app.use(express.urlencoded({ extended: false }));
 app.use("/", setRoleRouter); // 設定管理員
 
 app.use("/admin", productsRouter);
