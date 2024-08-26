@@ -295,7 +295,7 @@ router.post("/sendPayment", async (req, res) => {
       },
     });
 
-    if (response.status === 302) {
+    if (response.status === 200) {
       // 如果是重定向，返回重定向URL給前端
       res.json({ redirectUrl: response.headers.location });
     } else {
