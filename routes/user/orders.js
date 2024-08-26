@@ -299,6 +299,7 @@ router.post("/sendPayment", async (req, res) => {
       // 如果是重定向，返回重定向URL
       res.redirect(response.headers.location);
     } else {
+      console.log(response.data);
       // 否則返回支付閘道回應
       res.send(response.data);
     }
