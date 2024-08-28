@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/vuetify@3.0.0-beta.0/dist/vuetify.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <v-app>
+        <v-container class="failure-page" fluid>
+          <v-row justify="center" align="center">
+            <v-col cols="12" md="8" lg="6">
+              <v-card class="text-center" outlined>
+                <v-card-title class="d-flex justify-center align-center">
+                  <v-icon color="error" size="64"
+                    >mdi-close-circle-outline</v-icon
+                  >
+                </v-card-title>
+                <v-card-subtitle
+                  class="d-flex justify-center align-center mt-2"
+                >
+                  <h1 class="display-1 failure-text">交易失敗！</h1>
+                </v-card-subtitle>
+                <v-card-text>
+                  <p>抱歉，您的交易未能完成。請再試一次或聯繫客服。</p>
+                  <p>正在重定向到訂單資訊頁面...</p>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-app>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.0/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.0.0-beta.0/dist/vuetify.min.js"></script>
+
+    <script>
+      const { createApp } = Vue;
+      const { createVuetify } = Vuetify;
+      const vuetify = createVuetify();
+
+      createApp({}).use(vuetify).mount("#app");
+      setTimeout(function () {
+        window.location.href = "<%= redirectUrl %>";
+      }, 3000); // 3秒後進行重定向
+    </script>
+
+    <style scoped>
+      .failure-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f5f5f5;
+      }
+      .failure-text {
+        color: #f44336;
+      }
+      .v-card-title {
+        justify-content: center;
+        align-items: center;
+        display: flex;
+      }
+    </style>
+  </body>
+</html>

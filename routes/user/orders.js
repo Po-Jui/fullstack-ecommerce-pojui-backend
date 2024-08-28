@@ -296,38 +296,48 @@ router.post("/newebpay_return", async (req, res, next) => {
   const data = createSesDecrypt(response.TradeInfo);
   console.log("data:", data.Result.MerchantOrderNo);
 
-  try {
-    // 獲取訂單參考
-    const orderRef = db.collection("orders").doc(data.Result.MerchantOrderNo);
-    const doc = await orderRef.get();
+  if (req.body.Status === "SUCCESS") {
+    // 交易完成，將成功資訊儲存於資料庫
+    try {
+      // 獲取訂單參考
+      const orderRef = db.collection("orders").doc(data.Result.MerchantOrderNo);
+      const doc = await orderRef.get();
 
-    if (!doc.exists) {
-      console.error("找不到訂單，訂單號:", data.Result.MerchantOrderNo);
-      return res.status(404).json({ success: false, message: "找不到訂單" });
+      if (!doc.exists) {
+        console.error("找不到訂單，訂單號:", data.Result.MerchantOrderNo);
+        return res.status(404).json({ success: false, message: "找不到訂單" });
+      }
+
+      // 更新訂單狀態並新增 paid_date 欄位
+      await orderRef.update({
+        is_paid: true,
+        paid_date: admin.firestore.Timestamp.now().seconds, // 新增付款日期
+      });
+      // 確認更新後的文檔內容
+      const updatedDoc = await orderRef.get();
+      if (updatedDoc.exists && updatedDoc.data().is_paid === true) {
+        console.log("訂單更新成功:", data.Result.MerchantOrderNo);
+      } else {
+        console.error("訂單更新後檢查失敗:", data.Result.MerchantOrderNo);
+      }
+
+      // 渲染結果頁面
+      res.render("success", {
+        title: "success",
+        redirectUrl: `${redirectUrl}/${data.Result.MerchantOrderNo}`,
+      });
+    } catch (error) {
+      // 處理錯誤
+      console.error("更新訂單狀態失敗:", error);
+      res.status(500).json({ success: false, message: error.message });
     }
-
-    // 更新訂單狀態並新增 paid_date 欄位
-    await orderRef.update({
-      is_paid: true,
-      paid_date: admin.firestore.Timestamp.now().seconds, // 新增付款日期
-    });
-    // 確認更新後的文檔內容
-    const updatedDoc = await orderRef.get();
-    if (updatedDoc.exists && updatedDoc.data().is_paid === true) {
-      console.log("訂單更新成功:", data.Result.MerchantOrderNo);
-    } else {
-      console.error("訂單更新後檢查失敗:", data.Result.MerchantOrderNo);
-    }
-
+  } else {
+    // 交易失敗
     // 渲染結果頁面
-    res.render("success", {
-      title: "Express",
+    res.render("error", {
+      title: "error",
       redirectUrl: `${redirectUrl}/${data.Result.MerchantOrderNo}`,
     });
-  } catch (error) {
-    // 處理錯誤
-    console.error("更新訂單狀態失敗:", error);
-    res.status(500).json({ success: false, message: error.message });
   }
 });
 
